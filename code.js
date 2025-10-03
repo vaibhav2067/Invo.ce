@@ -9,14 +9,15 @@ figma.ui.onmessage = async (msg) => {
 
 async function createInvoiceFrame(invoiceData) {
     try {
-        // Create or find Invoices page
+        // Create or find Invoices page (FIXED: variable scope)
         let invoicesPage = figma.root.children.find(page => 
             page.name === "Invoices" && page.type === "PAGE"
         );
         
         if (!invoicesPage) {
-            const invoicesPage = figma.createPage();
+            invoicesPage = figma.createPage(); // REMOVED: const declaration
             invoicesPage.name = "Invoices";
+            figma.root.appendChild(invoicesPage);
         }
         
         figma.currentPage = invoicesPage;
@@ -29,12 +30,17 @@ async function createInvoiceFrame(invoiceData) {
         invoiceFrame.y = 100;
         invoiceFrame.fills = [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }];
         invoiceFrame.clipsContent = false;
+        invoiceFrame.layoutMode = 'VERTICAL';
+        invoiceFrame.itemSpacing = 20;
+        invoiceFrame.paddingLeft = 40;
+        invoiceFrame.paddingRight = 40;
+        invoiceFrame.paddingTop = 40;
+        invoiceFrame.paddingBottom = 40;
         
         // Add invoice content
         await addInvoiceContent(invoiceFrame, invoiceData);
         
         // Select the new frame
-        invoicesPage.appendChild(invoiceFrame);
         figma.currentPage.selection = [invoiceFrame];
         figma.viewport.scrollAndZoomIntoView([invoiceFrame]);
         
@@ -47,40 +53,53 @@ async function createInvoiceFrame(invoiceData) {
 }
 
 async function addInvoiceContent(frame, data) {
-    // Load font first
+    // Load fonts
     await figma.loadFontAsync({ family: "Inter", style: "Regular" });
     await figma.loadFontAsync({ family: "Inter", style: "Bold" });
     
-    let yPosition = 40;
-    
     // Header section with two columns
     const header = figma.createFrame();
-    header.resize(520, 150);
-    header.x = 40;
-    header.y = yPosition;
-    header.fills = [];
     header.layoutMode = 'HORIZONTAL';
     header.primaryAxisAlignItems = 'SPACE_BETWEEN';
     header.counterAxisSizingMode = 'AUTO';
+    header.resize(520, 150);
+    header.fills = [];
     
     // Left column - Company info
     const leftColumn = figma.createFrame();
-    leftColumn.resize(250, 150);
-    leftColumn.fills = [];
     leftColumn.layoutMode = 'VERTICAL';
     leftColumn.counterAxisSizingMode = 'AUTO';
     leftColumn.itemSpacing = 8;
+    leftColumn.fills = [];
     
-    // Add logo if available (simplified - just skip if there's an error)
+    // In the addInvoiceContent function, update the logo section:
+
+    // Add logo if available - with better error handling and fallback
     if (data.logo) {
         try {
             const logoImage = await createImageNode(data.logo);
             if (logoImage) {
-                logoImage.resize(50, 30);
+                // Add some spacing after logo
                 leftColumn.appendChild(logoImage);
+                
+                // Add a small spacer frame
+                const spacer = figma.createFrame();
+                spacer.resize(1, 10); // 10px height spacer
+                spacer.fills = [];
+                leftColumn.appendChild(spacer);
+            } else {
+                console.log('Logo image creation returned null');
             }
         } catch (error) {
-            console.log('Skipping logo due to error:', error);
+            console.log('Error creating logo:', error);
+            // Add a placeholder text if logo fails
+            const logoPlaceholder = createText(
+                data.companyName || 'Your Company',
+                14,
+                'LEFT',
+                true
+            );
+            leftColumn.appendChild(logoPlaceholder);
         }
     }
     
@@ -94,10 +113,9 @@ async function addInvoiceContent(frame, data) {
     
     // Right column - Client info
     const rightColumn = figma.createFrame();
-    rightColumn.resize(250, 150);
-    rightColumn.fills = [];
     rightColumn.layoutMode = 'VERTICAL';
     rightColumn.counterAxisSizingMode = 'AUTO';
+    rightColumn.fills = [];
     
     const clientText = createText(
         `Bill To:\n${data.clientCompany || 'Client Company'}\nAttn: ${data.clientContact || 'Contact Person'}\n${data.clientAddress || 'Client Address'}`,
@@ -110,8 +128,6 @@ async function addInvoiceContent(frame, data) {
     header.appendChild(rightColumn);
     frame.appendChild(header);
     
-    yPosition += 160;
-    
     // Invoice title
     const invoiceTitle = createText(
         `INVOICE #${data.invoiceNumber || '001'}`,
@@ -119,196 +135,191 @@ async function addInvoiceContent(frame, data) {
         'LEFT',
         true
     );
-    invoiceTitle.x = 40;
-    invoiceTitle.y = yPosition;
     frame.appendChild(invoiceTitle);
     
-    yPosition += 40;
+    // Invoice details row
+    const detailsRow = figma.createFrame();
+    detailsRow.layoutMode = 'HORIZONTAL';
+    detailsRow.primaryAxisAlignItems = 'SPACE_BETWEEN';
+    detailsRow.counterAxisSizingMode = 'AUTO';
+    detailsRow.resize(520, 20);
+    detailsRow.fills = [];
     
-    // Invoice details
-    const invoiceDetails = createText(
-        `Date: ${data.invoiceDate || 'N/A'}          Due Date: ${data.dueDate || 'N/A'}`,
+    const dateText = createText(
+        `Date: ${data.invoiceDate || 'N/A'}`,
         12,
         'LEFT'
     );
-    invoiceDetails.x = 40;
-    invoiceDetails.y = yPosition;
-    frame.appendChild(invoiceDetails);
     
-    yPosition += 40;
-    
-    // Line items header
-    const itemsHeader = createText(
-        'DESCRIPTION                                                             QTY      RATE       AMOUNT',
-        11,
-        'LEFT',
-        true
+    const dueDateText = createText(
+        `Due Date: ${data.dueDate || 'N/A'}`,
+        12,
+        'RIGHT'
     );
-    itemsHeader.x = 40;
-    itemsHeader.y = yPosition;
-    frame.appendChild(itemsHeader);
     
-    yPosition += 25;
+    detailsRow.appendChild(dateText);
+    detailsRow.appendChild(dueDateText);
+    frame.appendChild(detailsRow);
     
-    // Line separator
+    // Line items table
+    const tableFrame = figma.createFrame();
+    tableFrame.layoutMode = 'VERTICAL';
+    tableFrame.counterAxisSizingMode = 'AUTO';
+    tableFrame.resize(520, 200);
+    tableFrame.fills = [];
+    
+    // Table header
+    const tableHeader = figma.createFrame();
+    tableHeader.layoutMode = 'HORIZONTAL';
+    tableHeader.primaryAxisAlignItems = 'SPACE_BETWEEN';
+    tableHeader.counterAxisSizingMode = 'AUTO';
+    tableHeader.resize(520, 20);
+    tableHeader.fills = [];
+    
+    const descHeader = createText('DESCRIPTION', 11, 'LEFT', true);
+    const qtyHeader = createText('QTY', 11, 'CENTER', true);
+    const rateHeader = createText('RATE', 11, 'CENTER', true);
+    const amountHeader = createText('AMOUNT', 11, 'RIGHT', true);
+    
+    // Set widths for proper alignment
+    descHeader.resize(300, 20);
+    qtyHeader.resize(60, 20);
+    rateHeader.resize(80, 20);
+    amountHeader.resize(80, 20);
+    
+    tableHeader.appendChild(descHeader);
+    tableHeader.appendChild(qtyHeader);
+    tableHeader.appendChild(rateHeader);
+    tableHeader.appendChild(amountHeader);
+    
+    tableFrame.appendChild(tableHeader);
+    
+    // Separator line
     const separator = figma.createLine();
-    separator.x = 40;
-    separator.y = yPosition;
     separator.resize(520, 0);
     separator.strokes = [{ type: 'SOLID', color: { r: 0.8, g: 0.8, b: 0.8 } }];
-    frame.appendChild(separator);
-    
-    yPosition += 20;
+    tableFrame.appendChild(separator);
     
     // Line items
     if (data.lineItems && data.lineItems.length > 0) {
         for (const item of data.lineItems) {
+            const itemRow = figma.createFrame();
+            itemRow.layoutMode = 'HORIZONTAL';
+            itemRow.primaryAxisAlignItems = 'SPACE_BETWEEN';
+            itemRow.counterAxisSizingMode = 'AUTO';
+            itemRow.resize(520, 20);
+            itemRow.fills = [];
+            
             const desc = item.desc || '';
             const qty = item.qty || '0';
             const rate = item.rate || '0';
             const amount = item.amount || '$0.00';
             
-            const itemText = createText(
-                `${desc}`,
-                11,
-                'LEFT'
-            );
-            itemText.x = 40;
-            itemText.y = yPosition;
-            frame.appendChild(itemText);
+            const descText = createText(desc, 11, 'LEFT');
+            const qtyText = createText(qty, 11, 'CENTER');
+            const rateText = createText(`$${parseFloat(rate).toFixed(2)}`, 11, 'CENTER');
+            const amountText = createText(amount, 11, 'RIGHT');
             
-            const qtyText = createText(
-                qty,
-                11,
-                'LEFT'
-            );
-            qtyText.x = 400;
-            qtyText.y = yPosition;
-            frame.appendChild(qtyText);
-            
-            const rateText = createText(
-                `$${parseFloat(rate).toFixed(2)}`,
-                11,
-                'LEFT'
-            );
-            rateText.x = 450;
-            rateText.y = yPosition;
-            frame.appendChild(rateText);
-            
-            const amountText = createText(
-                amount,
-                11,
-                'RIGHT'
-            );
-            amountText.x = 520;
-            amountText.y = yPosition;
+            // Set consistent widths
+            descText.resize(300, 20);
+            qtyText.resize(60, 20);
+            rateText.resize(80, 20);
             amountText.resize(80, 20);
-            frame.appendChild(amountText);
             
-            yPosition += 20;
+            itemRow.appendChild(descText);
+            itemRow.appendChild(qtyText);
+            itemRow.appendChild(rateText);
+            itemRow.appendChild(amountText);
+            
+            tableFrame.appendChild(itemRow);
         }
     } else {
-        const noItemsText = createText(
-            'No items added',
-            11,
-            'CENTER'
-        );
-        noItemsText.x = 40;
-        noItemsText.y = yPosition;
+        const noItemsText = createText('No items added', 11, 'CENTER');
         noItemsText.resize(520, 20);
-        frame.appendChild(noItemsText);
-        yPosition += 30;
+        tableFrame.appendChild(noItemsText);
     }
     
-    yPosition += 20;
+    frame.appendChild(tableFrame);
     
     // Totals section
     const totalsFrame = figma.createFrame();
-    totalsFrame.resize(200, 100);
-    totalsFrame.x = 340;
-    totalsFrame.y = yPosition;
-    totalsFrame.fills = [];
     totalsFrame.layoutMode = 'VERTICAL';
     totalsFrame.counterAxisSizingMode = 'AUTO';
-    totalsFrame.itemSpacing = 5;
+    totalsFrame.primaryAxisAlignItems = 'MAX';
+    totalsFrame.resize(200, 100);
+    totalsFrame.fills = [];
+    totalsFrame.x = 340;
     
-    const subtotalText = createText(
-        `Subtotal: ${data.subtotal}`,
-        12,
-        'LEFT'
-    );
+    const subtotalText = createText(`Subtotal: ${data.subtotal || '$0.00'}`, 12, 'LEFT');
+    const taxText = createText(`Tax: ${data.taxAmount || '$0.00'}`, 12, 'LEFT');
+    const totalText = createText(`TOTAL: ${data.total || '$0.00'}`, 14, 'LEFT', true);
+    
     totalsFrame.appendChild(subtotalText);
-    
-    const taxText = createText(
-        `Tax: ${data.taxAmount}`,
-        12,
-        'LEFT'
-    );
     totalsFrame.appendChild(taxText);
-    
-    const totalText = createText(
-        `TOTAL: ${data.total}`,
-        14,
-        'LEFT',
-        true
-    );
     totalsFrame.appendChild(totalText);
     
     frame.appendChild(totalsFrame);
     
-    yPosition += 120;
-    
     // Message
     if (data.message) {
-        const messageText = createText(
-            data.message,
-            11,
-            'LEFT'
-        );
-        messageText.x = 40;
-        messageText.y = yPosition;
+        const messageText = createText(data.message, 11, 'LEFT');
         messageText.resize(520, 50);
         messageText.fills = [{ type: 'SOLID', color: { r: 0.4, g: 0.4, b: 0.4 } }];
         frame.appendChild(messageText);
     }
 }
 
-// Simplified image creation
 async function createImageNode(imageData) {
-    try {
-        // Extract base64 data
-        const base64Data = imageData.split(',')[1];
-        if (!base64Data) {
-            throw new Error('Invalid image data');
+    return new Promise((resolve) => {
+        try {
+            // Create a temporary image element to handle loading
+            const img = new Image();
+            
+            img.onload = function() {
+                try {
+                    // Create canvas to convert to proper format
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    
+                    // Convert to base64
+                    const base64Data = canvas.toDataURL('image/png').split(',')[1];
+                    const imageBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+                    
+                    // Create Figma image
+                    const image = figma.createImage(imageBytes);
+                    const imageNode = figma.createRectangle();
+                    imageNode.resize(120, 60);
+                    imageNode.fills = [{
+                        type: 'IMAGE',
+                        imageHash: image.hash,
+                        scaleMode: 'FIT'
+                    }];
+                    
+                    resolve(imageNode);
+                } catch (error) {
+                    console.error('Error processing loaded image:', error);
+                    resolve(null);
+                }
+            };
+            
+            img.onerror = function() {
+                console.log('Image loading failed');
+                resolve(null);
+            };
+            
+            img.src = imageData;
+            
+        } catch (error) {
+            console.error('Error in createImageNode:', error);
+            resolve(null);
         }
-        
-        // Convert base64 to bytes
-        const imageBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-        
-        // Create image
-        const image = figma.createImage(imageBytes);
-        
-        // Create rectangle for the image
-        const imageNode = figma.createRectangle();
-        imageNode.resize(60, 30);
-        imageNode.fills = [{
-            type: 'IMAGE',
-            imageHash: image.hash,
-            scaleMode: 'FILL'
-        }];
-        
-        return imageNode;
-    } catch (error) {
-        console.error('Error creating image:', error);
-        return null;
-    }
+    });
 }
-
-// Simplified text creation
 function createText(characters, fontSize, textAlignHorizontal, bold = false) {
     const textNode = figma.createText();
-    
-    // Set font
     textNode.fontName = { 
         family: "Inter", 
         style: bold ? "Bold" : "Regular" 
@@ -316,6 +327,5 @@ function createText(characters, fontSize, textAlignHorizontal, bold = false) {
     textNode.fontSize = fontSize;
     textNode.characters = characters;
     textNode.textAlignHorizontal = textAlignHorizontal;
-    
     return textNode;
 }

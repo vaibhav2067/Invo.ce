@@ -600,7 +600,7 @@ function generatePreview() {
     preview.innerHTML = `
         <div class="preview-header">
             <div class="preview-company">
-                ${logoHtml}
+                ${logoHtml}<br>
                 <strong>${document.getElementById('companyName').value || 'Your Company'}</strong><br>
                 ${document.getElementById('companyAddress').value || 'Your Address'}<br>
                 Phone: ${document.getElementById('companyPhone').value || 'N/A'}<br>
