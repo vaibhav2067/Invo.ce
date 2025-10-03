@@ -15,17 +15,17 @@ async function createInvoiceFrame(invoiceData) {
         );
         
         if (!invoicesPage) {
-            invoicesPage = figma.createPage(); // REMOVED: const declaration
+            invoicesPage = figma.createPage();
             invoicesPage.name = "Invoices";
             figma.root.appendChild(invoicesPage);
         }
         
         figma.currentPage = invoicesPage;
         
-        // Create invoice artboard
+        // Create invoice artboard - YOUR CHANGE: 600 -> 420
         const invoiceFrame = figma.createFrame();
         invoiceFrame.name = `Invoice-${invoiceData.invoiceNumber || '001'}`;
-        invoiceFrame.resize(600, 800);
+        invoiceFrame.resize(420, 800); // CHANGED: 600 -> 420
         invoiceFrame.x = 100;
         invoiceFrame.y = 100;
         invoiceFrame.fills = [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }];
@@ -36,6 +36,20 @@ async function createInvoiceFrame(invoiceData) {
         invoiceFrame.paddingRight = 40;
         invoiceFrame.paddingTop = 40;
         invoiceFrame.paddingBottom = 40;
+        invoiceFrame.cornerRadius = 16; 
+
+        // ADDED: Drop shadow effect
+        invoiceFrame.effects = [
+            {
+                type: 'DROP_SHADOW',
+                color: { r: 0, g: 0, b: 0, a: 0.25 },
+                offset: { x: 4, y: 4 },
+                radius: 40,
+                spread: 0,
+                visible: true,
+                blendMode: 'NORMAL'
+            }
+        ];
         
         // Add invoice content
         await addInvoiceContent(invoiceFrame, invoiceData);
@@ -57,12 +71,12 @@ async function addInvoiceContent(frame, data) {
     await figma.loadFontAsync({ family: "Inter", style: "Regular" });
     await figma.loadFontAsync({ family: "Inter", style: "Bold" });
     
-    // Header section with two columns
+    // Header section with two columns - YOUR CHANGE: 540 -> 340
     const header = figma.createFrame();
     header.layoutMode = 'HORIZONTAL';
     header.primaryAxisAlignItems = 'SPACE_BETWEEN';
     header.counterAxisSizingMode = 'AUTO';
-    header.resize(520, 150);
+    header.resize(340, 75); // CHANGED: 540 -> 340
     header.fills = [];
     
     // Left column - Company info
@@ -72,8 +86,6 @@ async function addInvoiceContent(frame, data) {
     leftColumn.itemSpacing = 8;
     leftColumn.fills = [];
     
-    // In the addInvoiceContent function, update the logo section:
-
     // Add logo if available - with better error handling and fallback
     if (data.logo) {
         try {
@@ -137,12 +149,12 @@ async function addInvoiceContent(frame, data) {
     );
     frame.appendChild(invoiceTitle);
     
-    // Invoice details row
+    // Invoice details row - UPDATED: width from 520 to 340 to match header
     const detailsRow = figma.createFrame();
     detailsRow.layoutMode = 'HORIZONTAL';
     detailsRow.primaryAxisAlignItems = 'SPACE_BETWEEN';
     detailsRow.counterAxisSizingMode = 'AUTO';
-    detailsRow.resize(520, 20);
+    detailsRow.resize(340, 20); // CHANGED: 520 -> 340
     detailsRow.fills = [];
     
     const dateText = createText(
@@ -161,19 +173,19 @@ async function addInvoiceContent(frame, data) {
     detailsRow.appendChild(dueDateText);
     frame.appendChild(detailsRow);
     
-    // Line items table
+    // Line items table - UPDATED: width from 520 to 340
     const tableFrame = figma.createFrame();
     tableFrame.layoutMode = 'VERTICAL';
     tableFrame.counterAxisSizingMode = 'AUTO';
-    tableFrame.resize(520, 200);
+    tableFrame.resize(340, 200); // CHANGED: 520 -> 340
     tableFrame.fills = [];
     
-    // Table header
+    // Table header - UPDATED: width from 520 to 340
     const tableHeader = figma.createFrame();
     tableHeader.layoutMode = 'HORIZONTAL';
     tableHeader.primaryAxisAlignItems = 'SPACE_BETWEEN';
     tableHeader.counterAxisSizingMode = 'AUTO';
-    tableHeader.resize(520, 20);
+    tableHeader.resize(340, 20); // CHANGED: 520 -> 340
     tableHeader.fills = [];
     
     const descHeader = createText('DESCRIPTION', 11, 'LEFT', true);
@@ -181,11 +193,11 @@ async function addInvoiceContent(frame, data) {
     const rateHeader = createText('RATE', 11, 'CENTER', true);
     const amountHeader = createText('AMOUNT', 11, 'RIGHT', true);
     
-    // Set widths for proper alignment
-    descHeader.resize(300, 20);
-    qtyHeader.resize(60, 20);
-    rateHeader.resize(80, 20);
-    amountHeader.resize(80, 20);
+    // Set widths for proper alignment - UPDATED: adjusted for new total width
+    descHeader.resize(180, 20); // CHANGED: 300 -> 180
+    qtyHeader.resize(40, 20);   // CHANGED: 60 -> 40
+    rateHeader.resize(60, 20);  // CHANGED: 80 -> 60
+    amountHeader.resize(60, 20); // CHANGED: 80 -> 60
     
     tableHeader.appendChild(descHeader);
     tableHeader.appendChild(qtyHeader);
@@ -194,9 +206,9 @@ async function addInvoiceContent(frame, data) {
     
     tableFrame.appendChild(tableHeader);
     
-    // Separator line
+    // Separator line - UPDATED: width from 520 to 340
     const separator = figma.createLine();
-    separator.resize(520, 0);
+    separator.resize(340, 0); // CHANGED: 520 -> 340
     separator.strokes = [{ type: 'SOLID', color: { r: 0.8, g: 0.8, b: 0.8 } }];
     tableFrame.appendChild(separator);
     
@@ -207,7 +219,7 @@ async function addInvoiceContent(frame, data) {
             itemRow.layoutMode = 'HORIZONTAL';
             itemRow.primaryAxisAlignItems = 'SPACE_BETWEEN';
             itemRow.counterAxisSizingMode = 'AUTO';
-            itemRow.resize(520, 20);
+            itemRow.resize(340, 20); // CHANGED: 520 -> 340
             itemRow.fills = [];
             
             const desc = item.desc || '';
@@ -220,11 +232,11 @@ async function addInvoiceContent(frame, data) {
             const rateText = createText(`$${parseFloat(rate).toFixed(2)}`, 11, 'CENTER');
             const amountText = createText(amount, 11, 'RIGHT');
             
-            // Set consistent widths
-            descText.resize(300, 20);
-            qtyText.resize(60, 20);
-            rateText.resize(80, 20);
-            amountText.resize(80, 20);
+            // Set consistent widths - UPDATED: same as header widths
+            descText.resize(180, 20); // CHANGED: 300 -> 180
+            qtyText.resize(40, 20);   // CHANGED: 60 -> 40
+            rateText.resize(60, 20);  // CHANGED: 80 -> 60
+            amountText.resize(60, 20); // CHANGED: 80 -> 60
             
             itemRow.appendChild(descText);
             itemRow.appendChild(qtyText);
@@ -235,20 +247,20 @@ async function addInvoiceContent(frame, data) {
         }
     } else {
         const noItemsText = createText('No items added', 11, 'CENTER');
-        noItemsText.resize(520, 20);
+        noItemsText.resize(340, 20); // CHANGED: 520 -> 340
         tableFrame.appendChild(noItemsText);
     }
     
     frame.appendChild(tableFrame);
     
-    // Totals section
+    // Totals section - UPDATED: position and width
     const totalsFrame = figma.createFrame();
     totalsFrame.layoutMode = 'VERTICAL';
     totalsFrame.counterAxisSizingMode = 'AUTO';
     totalsFrame.primaryAxisAlignItems = 'MAX';
-    totalsFrame.resize(200, 100);
+    totalsFrame.resize(140, 100); // CHANGED: 200 -> 140
     totalsFrame.fills = [];
-    totalsFrame.x = 340;
+    totalsFrame.x = 200; // CHANGED: 340 -> 200 (adjusted for new width)
     
     const subtotalText = createText(`Subtotal: ${data.subtotal || '$0.00'}`, 12, 'LEFT');
     const taxText = createText(`Tax: ${data.taxAmount || '$0.00'}`, 12, 'LEFT');
@@ -260,64 +272,44 @@ async function addInvoiceContent(frame, data) {
     
     frame.appendChild(totalsFrame);
     
-    // Message
+    // Message - UPDATED: width from 520 to 340
     if (data.message) {
         const messageText = createText(data.message, 11, 'LEFT');
-        messageText.resize(520, 50);
+        messageText.resize(340, 50); // CHANGED: 520 -> 340
         messageText.fills = [{ type: 'SOLID', color: { r: 0.4, g: 0.4, b: 0.4 } }];
         frame.appendChild(messageText);
     }
 }
 
+// FIXED: Simplified createImageNode for Figma plugin environment
 async function createImageNode(imageData) {
-    return new Promise((resolve) => {
-        try {
-            // Create a temporary image element to handle loading
-            const img = new Image();
-            
-            img.onload = function() {
-                try {
-                    // Create canvas to convert to proper format
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
-                    
-                    // Convert to base64
-                    const base64Data = canvas.toDataURL('image/png').split(',')[1];
-                    const imageBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-                    
-                    // Create Figma image
-                    const image = figma.createImage(imageBytes);
-                    const imageNode = figma.createRectangle();
-                    imageNode.resize(120, 60);
-                    imageNode.fills = [{
-                        type: 'IMAGE',
-                        imageHash: image.hash,
-                        scaleMode: 'FIT'
-                    }];
-                    
-                    resolve(imageNode);
-                } catch (error) {
-                    console.error('Error processing loaded image:', error);
-                    resolve(null);
-                }
-            };
-            
-            img.onerror = function() {
-                console.log('Image loading failed');
-                resolve(null);
-            };
-            
-            img.src = imageData;
-            
-        } catch (error) {
-            console.error('Error in createImageNode:', error);
-            resolve(null);
-        }
-    });
+    try {
+        // For Figma plugins, we can directly use the base64 data
+        // Remove the data URL prefix if present
+        const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
+        
+        // Convert base64 to Uint8Array
+        const imageBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+        
+        // Create Figma image
+        const image = figma.createImage(imageBytes);
+        const imageNode = figma.createRectangle();
+        
+        // Set reasonable logo dimensions
+        imageNode.resize(120, 60);
+        imageNode.fills = [{
+            type: 'IMAGE',
+            imageHash: image.hash,
+            scaleMode: 'FIT'
+        }];
+        
+        return imageNode;
+    } catch (error) {
+        console.error('Error creating image node:', error);
+        return null;
+    }
 }
+
 function createText(characters, fontSize, textAlignHorizontal, bold = false) {
     const textNode = figma.createText();
     textNode.fontName = { 

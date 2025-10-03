@@ -2,9 +2,6 @@
 <html>
 <head>
     <style>
-
-        
-        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -19,7 +16,6 @@
             flex-direction: column;
         }
 
-        /* Header Styles */
         .header {
             height: 50px;
             border-bottom: 1px solid #e5e5e5;
@@ -49,7 +45,6 @@
             font-size: 12px;
         }
 
-        /* Main Content Area */
         .main-content {
             flex: 1;
             overflow-y: auto;
@@ -67,14 +62,12 @@
             color: #000;
         }
 
-        /* Two Column Layout */
         .two-column {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
 
-        /* Form Groups */
         .form-group {
             margin-bottom: 12px;
         }
@@ -100,7 +93,6 @@
             border-color: #0099ff;
         }
 
-        /* Line Items Table */
         .line-items {
             width: 100%;
             border-collapse: collapse;
@@ -136,7 +128,6 @@
             width: 100%;
         }
 
-        /* Calculations */
         .calculations {
             border-top: 1px solid #e5e5e5;
             padding-top: 12px;
@@ -156,7 +147,6 @@
             margin-top: 8px;
         }
 
-        /* Footer */
         .footer {
             height: 60px;
             border-top: 1px solid #e5e5e5;
@@ -183,7 +173,6 @@
             border-color: #0099ff;
         }
 
-        /* Preview Styles */
         .preview-container {
             display: none;
             padding: 20px;
@@ -268,125 +257,115 @@
         }
 
         .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-}
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
 
-.modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-    max-height: 80vh;
-    overflow-y: auto; /* Enable scrolling */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    &::-webkit-scrollbar {
-        display: none;
-    }
-    
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
-.modal-content h3 {
-    margin: 0 0 12px 0;
-    color: #333;
-    font-size: 18px;
-    text-align: center;
-}
+        .modal-content h3 {
+            margin: 0 0 12px 0;
+            color: #333;
+            font-size: 18px;
+            text-align: center;
+        }
 
-.modal-content p {
-    margin: 0 0 16px 0;
-    color: #666;
-    font-size: 14px;
-    line-height: 1.4;
-}
+        .modal-content p {
+            margin: 0 0 16px 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
 
-.message-section {
-    margin: 16px 0;
-    padding: 12px;
-    background: #f5f5f5;
-    border-radius: 6px;
-    border-left: 3px solid #007bff;
-}
+        .message-section {
+            margin: 16px 0;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            border-left: 3px solid #007bff;
+        }
 
-.message-section h4 {
-    margin: 0 0 8px 0;
-    color: #444;
-    font-size: 14px;
-    font-weight: 600;
-}
+        .message-section h4 {
+            margin: 0 0 8px 0;
+            color: #444;
+            font-size: 14px;
+            font-weight: 600;
+        }
 
-.message-section ul {
-    margin: 8px 0;
-    padding-left: 16px;
-}
+        .message-section ul {
+            margin: 8px 0;
+            padding-left: 16px;
+        }
 
-.message-section li {
-    margin-bottom: 4px;
-    font-size: 13px;
-    color: #666;
-    line-height: 1.3;
-}
+        .message-section li {
+            margin-bottom: 4px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.3;
+        }
 
-.contribute-link {
-    display: inline-block;
-    background: #007bff;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 13px;
-}
+        .contribute-link {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 13px;
+        }
 
-.contribute-link:hover {
-    background: #0056b3;
-}
+        .contribute-link:hover {
+            background: #0056b3;
+        }
 
-.modal-close {
-    width: 100%;
-    padding: 10px;
-    background: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    margin-top: 16px;
-}
+        .modal-close {
+            width: 100%;
+            padding: 10px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 16px;
+        }
 
-.modal-close:hover {
-    background: #545b62;
-}
-        
+        .modal-close:hover {
+            background: #545b62;
+        }
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header section with plugin title and info button -->
     <div class="header">
         <div class="plugin-title">Invo.ce</div>
         <button class="info-button" id="infoButton">i</button>
     </div>
 
-    <!-- Main Form Content -->
+    <!-- Main form content area -->
     <div class="main-content" id="mainContent">
-        <!-- Sender & Client Info -->
+        <!-- Sender and client information section -->
         <div class="form-section">
             <div class="two-column">
-                <!-- Sender Info -->
+                <!-- Sender information column -->
                 <div style="border-right: 2px solid #00000037; padding-right: 16px;">
                     <div class="section-title">Your Information</div>
                     <div class="form-group">
@@ -418,7 +397,7 @@
                     </div>
                 </div>
 
-                <!-- Client Info -->
+                <!-- Client information column -->
                 <div>
                     <div class="section-title">Client Information</div>
                     <div class="form-group">
@@ -437,7 +416,7 @@
             </div>
         </div>
 
-        <!-- Invoice Details -->
+        <!-- Invoice details section -->
         <div class="form-section">
             <div class="section-title">Invoice Details</div>
             <div class="two-column">
@@ -456,7 +435,7 @@
             </div>
         </div>
 
-        <!-- Line Items -->
+        <!-- Line items section -->
         <div class="form-section">
             <div class="section-title">Line Items</div>
             <table class="line-items" id="lineItemsTable">
@@ -469,13 +448,13 @@
                     </tr>
                 </thead>
                 <tbody id="lineItemsBody">
-                    <!-- Line items will be added here dynamically -->
+                    <!-- Line items will be dynamically added here -->
                 </tbody>
             </table>
             <button class="add-item-btn" id="addItemBtn">+ Add Item</button>
         </div>
 
-        <!-- Calculations -->
+        <!-- Calculations section -->
         <div class="form-section calculations">
             <div class="calc-row">
                 <span>Subtotal:</span>
@@ -499,361 +478,363 @@
             </div>
         </div>
 
-        <!-- Message -->
+        <!-- Thank you message section -->
         <div class="form-section">
             <div class="section-title">Message</div>
             <textarea id="thankYouMessage" rows="3" placeholder="Thank you for your business!"></textarea>
         </div>
     </div>
 
-    <!-- Preview Container -->
+    <!-- Preview container (hidden by default) -->
     <div class="preview-container" id="previewContainer">
         <div class="invoice-preview" id="invoicePreview">
             <!-- Preview content will be generated here -->
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footer with action buttons -->
     <div class="footer">
         <button class="footer-btn" id="previewBtn">Preview</button>
         <button class="footer-btn primary" id="exportBtn">Export as Frame</button>
         <button class="footer-btn" id="backBtn" style="display: none;">Back</button>
     </div>
 
-    <!-- Info Modal -->
+    <!-- Information modal -->
     <div class="modal" id="infoModal">
-    <div class="modal-content">
-        <h3>Invo.ce Welcomes all users</h3>
-        <p>Created for freelancers and businesses to quickly generate professional invoices directly in Figma.</p>
-        <p>All data stays on your computer - we respect your privacy.</p>
-        
-        <div class="message-section">
-            <h4>Found a Bug?</h4>
-            <p>Help us improve by reporting issues:</p>
-            <a href="https://github.com/vaibhav2067/Invo.ce" 
-               target="_blank" 
-               class="contribute-link">
-                Report Issues on GitHub
-            </a>
-        </div>
-        <div class="message-section">
-            <h4>Current Known Issues</h4>
-            <ul>
-                <li><strong>Logo upload:</strong> Temporarily disabled - fix coming in next update</li>
-                <li><strong>Export location:</strong> Invoices are created on a dedicated "Invoices" page</li>
-                <li><strong>Formatting:</strong> Some variations between preview and final export may occur</li>
-            </ul>
-        </div>
+        <div class="modal-content">
+            <h3>Invo.ce Welcomes all users</h3>
+            <p>Created for freelancers and businesses to quickly generate professional invoices directly in Figma.</p>
+            <p>All data stays on your computer - we respect your privacy.</p>
+            
+            <div class="message-section">
+                <h4>Found a Bug?</h4>
+                <p>Help us improve by reporting issues:</p>
+                <a href="https://github.com/vaibhav2067/Invo.ce" 
+                   target="_blank" 
+                   class="contribute-link">
+                    Report Issues on GitHub
+                </a>
+            </div>
+            <div class="message-section">
+                <h4>Current Known Issues</h4>
+                <ul>
+                    <li><strong>Logo upload:</strong> Temporarily disabled - fix coming in next update</li>
+                    <li><strong>Export location:</strong> Invoices are created on a dedicated "Invoices" page</li>
+                    <li><strong>Formatting:</strong> Some variations between preview and final export may occur</li>
+                </ul>
+            </div>
 
+            <div class="message-section">
+                <h4>Coming Soon</h4>
+                <ul>
+                    <li>Logo support restoration</li>
+                    <li>Advanced styling options</li>
+                </ul>
+            </div>
 
-        <div class="message-section">
-            <h4>Coming Soon</h4>
-            <ul>
-                <li>Logo support restoration</li>
-                <li>Advanced styling options</li>
-            </ul>
+            <button class="modal-close" id="modalClose">Got it, thanks!</button>
         </div>
-
-        <button class="modal-close" id="modalClose">Got it, thanks!</button>
     </div>
-</div>
 
     <script>
-        // UI Logic for Invoice Generator
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize
-    initializeLineItems();
-    setupEventListeners();
-    setDefaultDates();
-});
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeLineItems();
+            setupEventListeners();
+            setDefaultDates();
+        });
 
-function setDefaultDates() {
-    const today = new Date().toISOString().split('T')[0];
-    const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + 30);
-    const dueDateString = dueDate.toISOString().split('T')[0];
-    
-    document.getElementById('invoiceDate').value = today;
-    document.getElementById('dueDate').value = dueDateString;
-}
-
-function initializeLineItems() {
-    addLineItem(); // Start with one empty line item
-}
-
-function setupEventListeners() {
-    // Info button
-    document.getElementById('infoButton').addEventListener('click', showInfoModal);
-    document.getElementById('modalClose').addEventListener('click', hideInfoModal);
-    
-    // Main buttons
-    document.getElementById('previewBtn').addEventListener('click', showPreview);
-    document.getElementById('backBtn').addEventListener('click', showForm);
-    document.getElementById('exportBtn').addEventListener('click', exportToFigma);
-    
-    // Line items
-    document.getElementById('addItemBtn').addEventListener('click', addLineItem);
-    
-    // Logo upload
-    document.getElementById('logoUpload').addEventListener('change', handleLogoUpload);
-    
-    // Calculation listeners
-    document.getElementById('taxRate').addEventListener('input', calculateTotals);
-    document.getElementById('discount').addEventListener('input', calculateTotals);
-}
-
-function showInfoModal() {
-    document.getElementById('infoModal').style.display = 'flex';
-}
-
-function hideInfoModal() {
-    document.getElementById('infoModal').style.display = 'none';
-}
-
-function handleLogoUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const logoPreview = document.getElementById('logoPreview');
-            const logoPreviewImg = document.getElementById('logoPreviewImg');
-            logoPreviewImg.src = e.target.result;
-            logoPreview.style.display = 'block';
+        // Set default dates for invoice and due date
+        function setDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 30);
+            const dueDateString = dueDate.toISOString().split('T')[0];
+            
+            document.getElementById('invoiceDate').value = today;
+            document.getElementById('dueDate').value = dueDateString;
         }
-        reader.readAsDataURL(file);
-    }
-}
 
-function addLineItem() {
-    const tbody = document.getElementById('lineItemsBody');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td><input type="text" class="item-desc" placeholder="Item description"></td>
-        <td><input type="number" class="item-qty" value="1" min="0"></td>
-        <td><input type="number" class="item-rate" value="0" min="0" step="0.01"></td>
-        <td><input type="text" class="item-amount" value="$0.00" readonly></td>
-    `;
-    
-    tbody.appendChild(row);
-    
-    // Add event listeners to new inputs
-    const qtyInput = row.querySelector('.item-qty');
-    const rateInput = row.querySelector('.item-rate');
-    
-    qtyInput.addEventListener('input', () => calculateLineItem(row));
-    rateInput.addEventListener('input', () => calculateLineItem(row));
-}
+        // Initialize with one empty line item
+        function initializeLineItems() {
+            addLineItem();
+        }
 
-function calculateLineItem(row) {
-    const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
-    const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
-    const amount = qty * rate;
-    
-    row.querySelector('.item-amount').value = formatCurrency(amount);
-    calculateTotals();
-}
+        // Set up all event listeners
+        function setupEventListeners() {
+            document.getElementById('infoButton').addEventListener('click', showInfoModal);
+            document.getElementById('modalClose').addEventListener('click', hideInfoModal);
+            document.getElementById('previewBtn').addEventListener('click', showPreview);
+            document.getElementById('backBtn').addEventListener('click', showForm);
+            document.getElementById('exportBtn').addEventListener('click', exportToFigma);
+            document.getElementById('addItemBtn').addEventListener('click', addLineItem);
+            document.getElementById('logoUpload').addEventListener('change', handleLogoUpload);
+            document.getElementById('taxRate').addEventListener('input', calculateTotals);
+            document.getElementById('discount').addEventListener('input', calculateTotals);
+        }
 
-function calculateTotals() {
-    const rows = document.querySelectorAll('#lineItemsBody tr');
-    let subtotal = 0;
-    
-    rows.forEach(row => {
-        const amountText = row.querySelector('.item-amount').value;
-        const amount = parseFloat(amountText.replace(/[^0-9.-]+/g,"")) || 0;
-        subtotal += amount;
-    });
-    
-    const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
-    const discount = parseFloat(document.getElementById('discount').value) || 0;
-    
-    const taxAmount = subtotal * (taxRate / 100);
-    const total = subtotal + taxAmount - discount;
-    
-    document.getElementById('subtotalValue').textContent = formatCurrency(subtotal);
-    document.getElementById('taxAmount').textContent = formatCurrency(taxAmount);
-    document.getElementById('totalValue').textContent = formatCurrency(total);
-}
+        // Show information modal
+        function showInfoModal() {
+            document.getElementById('infoModal').style.display = 'flex';
+        }
 
-function formatCurrency(amount) {
-    return '$' + amount.toFixed(2);
-}
+        // Hide information modal
+        function hideInfoModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
 
-function showPreview() {
-    generatePreview();
-    document.getElementById('mainContent').style.display = 'none';
-    document.getElementById('previewContainer').style.display = 'block';
-    document.getElementById('previewBtn').style.display = 'none';
-    document.getElementById('backBtn').style.display = 'block';
-}
+        // Handle logo upload and preview
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const logoPreview = document.getElementById('logoPreview');
+                    const logoPreviewImg = document.getElementById('logoPreviewImg');
+                    logoPreviewImg.src = e.target.result;
+                    logoPreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
 
-function showForm() {
-    document.getElementById('mainContent').style.display = 'block';
-    document.getElementById('previewContainer').style.display = 'none';
-    document.getElementById('previewBtn').style.display = 'block';
-    document.getElementById('backBtn').style.display = 'none';
-}
+        // Add a new line item row to the table
+        function addLineItem() {
+            const tbody = document.getElementById('lineItemsBody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" class="item-desc" placeholder="Item description"></td>
+                <td><input type="number" class="item-qty" value="1" min="0"></td>
+                <td><input type="number" class="item-rate" value="0" min="0" step="0.01"></td>
+                <td><input type="text" class="item-amount" value="$0.00" readonly></td>
+            `;
+            
+            tbody.appendChild(row);
+            
+            const qtyInput = row.querySelector('.item-qty');
+            const rateInput = row.querySelector('.item-rate');
+            
+            qtyInput.addEventListener('input', () => calculateLineItem(row));
+            rateInput.addEventListener('input', () => calculateLineItem(row));
+        }
 
-function generatePreview() {
-    const preview = document.getElementById('invoicePreview');
-    
-    const logoPreviewImg = document.getElementById('logoPreviewImg');
-    const logoHtml = logoPreviewImg && logoPreviewImg.src ? 
-        `<img src="${logoPreviewImg.src}" style="max-width: 60px; max-height: 30px; margin-bottom: 12px;">` : 
-        '<div class="preview-logo"></div>';
-    
-    preview.innerHTML = `
-        <div class="preview-header">
-            <div class="preview-company">
-                ${logoHtml}<br>
-                <strong>${document.getElementById('companyName').value || 'Your Company'}</strong><br>
-                ${document.getElementById('companyAddress').value || 'Your Address'}<br>
-                Phone: ${document.getElementById('companyPhone').value || 'N/A'}<br>
-                Email: ${document.getElementById('companyEmail').value || 'N/A'}<br>
-                Tax ID: ${document.getElementById('companyTaxId').value || 'N/A'}
-            </div>
-            <div class="preview-client" style="text-align: right;">
-                <strong>Bill To:</strong><br>
-                ${document.getElementById('clientCompany').value || 'Client Company'}<br>
-                Attn: ${document.getElementById('clientContact').value || 'Contact Person'}<br>
-                ${document.getElementById('clientAddress').value || 'Client Address'}
-            </div>
-        </div>
-        
-        <div class="preview-title">
-            INVOICE #${document.getElementById('invoiceNumber').value || '001'}
-        </div>
-        
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 12px;">
-            <div><strong>Date:</strong> ${document.getElementById('invoiceDate').value || 'N/A'}</div>
-            <div><strong>Due Date:</strong> ${document.getElementById('dueDate').value || 'N/A'}</div>
-        </div>
-        
-        <table class="preview-table">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Qty</th>
-                    <th>Rate</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${generatePreviewLineItems()}
-            </tbody>
-        </table>
-        
-        <div class="preview-totals">
-            ${generatePreviewTotals()}
-        </div>
-        
-        <div class="preview-message">
-            ${document.getElementById('thankYouMessage').value || 'Thank you for your business!'}
-        </div>
-    `;
-}
+        // Calculate amount for a single line item
+        function calculateLineItem(row) {
+            const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+            const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
+            const amount = qty * rate;
+            
+            row.querySelector('.item-amount').value = formatCurrency(amount);
+            calculateTotals();
+        }
 
-function generatePreviewLineItems() {
-    const rows = document.querySelectorAll('#lineItemsBody tr');
-    let html = '';
-    
-    rows.forEach(row => {
-        const desc = row.querySelector('.item-desc').value || '';
-        const qty = row.querySelector('.item-qty').value || '0';
-        const rate = row.querySelector('.item-rate').value || '0';
-        const amount = row.querySelector('.item-amount').value || '$0.00';
-        
-        if (desc || qty !== '0' || rate !== '0') {
-            html += `
-                <tr>
-                    <td>${desc}</td>
-                    <td>${qty}</td>
-                    <td>${formatCurrency(parseFloat(rate))}</td>
-                    <td>${amount}</td>
-                </tr>
+        // Calculate all totals (subtotal, tax, discount, total)
+        function calculateTotals() {
+            const rows = document.querySelectorAll('#lineItemsBody tr');
+            let subtotal = 0;
+            
+            rows.forEach(row => {
+                const amountText = row.querySelector('.item-amount').value;
+                const amount = parseFloat(amountText.replace(/[^0-9.-]+/g,"")) || 0;
+                subtotal += amount;
+            });
+            
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            const discount = parseFloat(document.getElementById('discount').value) || 0;
+            
+            const taxAmount = subtotal * (taxRate / 100);
+            const total = subtotal + taxAmount - discount;
+            
+            document.getElementById('subtotalValue').textContent = formatCurrency(subtotal);
+            document.getElementById('taxAmount').textContent = formatCurrency(taxAmount);
+            document.getElementById('totalValue').textContent = formatCurrency(total);
+        }
+
+        // Format number as currency
+        function formatCurrency(amount) {
+            return '$' + amount.toFixed(2);
+        }
+
+        // Show preview of the invoice
+        function showPreview() {
+            generatePreview();
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('previewContainer').style.display = 'block';
+            document.getElementById('previewBtn').style.display = 'none';
+            document.getElementById('backBtn').style.display = 'block';
+        }
+
+        // Show form (hide preview)
+        function showForm() {
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('previewBtn').style.display = 'block';
+            document.getElementById('backBtn').style.display = 'none';
+        }
+
+        // Generate the preview HTML
+        function generatePreview() {
+            const preview = document.getElementById('invoicePreview');
+            
+            const logoPreviewImg = document.getElementById('logoPreviewImg');
+            const logoHtml = logoPreviewImg && logoPreviewImg.src ? 
+                `<img src="${logoPreviewImg.src}" style="max-width: 60px; max-height: 30px; margin-bottom: 12px;">` : 
+                '<div class="preview-logo"></div>';
+            
+            preview.innerHTML = `
+                <div class="preview-header">
+                    <div class="preview-company">
+                        ${logoHtml}<br>
+                        <strong>${document.getElementById('companyName').value || 'Your Company'}</strong><br>
+                        ${document.getElementById('companyAddress').value || 'Your Address'}<br>
+                        Phone: ${document.getElementById('companyPhone').value || 'N/A'}<br>
+                        Email: ${document.getElementById('companyEmail').value || 'N/A'}<br>
+                        Tax ID: ${document.getElementById('companyTaxId').value || 'N/A'}
+                    </div>
+                    <div class="preview-client" style="text-align: right;">
+                        <strong>Bill To:</strong><br>
+                        ${document.getElementById('clientCompany').value || 'Client Company'}<br>
+                        Attn: ${document.getElementById('clientContact').value || 'Contact Person'}<br>
+                        ${document.getElementById('clientAddress').value || 'Client Address'}
+                    </div>
+                </div>
+                
+                <div class="preview-title">
+                    INVOICE #${document.getElementById('invoiceNumber').value || '001'}
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 12px;">
+                    <div><strong>Date:</strong> ${document.getElementById('invoiceDate').value || 'N/A'}</div>
+                    <div><strong>Due Date:</strong> ${document.getElementById('dueDate').value || 'N/A'}</div>
+                </div>
+                
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${generatePreviewLineItems()}
+                    </tbody>
+                </table>
+                
+                <div class="preview-totals">
+                    ${generatePreviewTotals()}
+                </div>
+                
+                <div class="preview-message">
+                    ${document.getElementById('thankYouMessage').value || 'Thank you for your business!'}
+                </div>
             `;
         }
-    });
-    
-    return html || '<tr><td colspan="4" style="text-align: center;">No items added</td></tr>';
-}
 
-function generatePreviewTotals() {
-    const subtotal = document.getElementById('subtotalValue').textContent;
-    const taxAmount = document.getElementById('taxAmount').textContent;
-    const total = document.getElementById('totalValue').textContent;
-    const taxRate = document.getElementById('taxRate').value || '0';
-    const discount = document.getElementById('discount').value || '0';
-    
-    return `
-        <div class="preview-total-row">
-            <span>Subtotal:</span>
-            <span>${subtotal}</span>
-        </div>
-        <div class="preview-total-row">
-            <span>Tax (${taxRate}%):</span>
-            <span>${taxAmount}</span>
-        </div>
-        <div class="preview-total-row">
-            <span>Discount:</span>
-            <span>-${formatCurrency(parseFloat(discount))}</span>
-        </div>
-        <div class="preview-total-row final">
-            <span>TOTAL:</span>
-            <span>${total}</span>
-        </div>
-    `;
-}
-
-function exportToFigma() {
-    // Get logo data if available
-    let logoData = null;
-    const logoPreviewImg = document.getElementById('logoPreviewImg');
-    if (logoPreviewImg && logoPreviewImg.src) {
-        logoData = logoPreviewImg.src;
-    }
-    
-    // Collect all data
-    const invoiceData = {
-        companyName: document.getElementById('companyName').value,
-        companyAddress: document.getElementById('companyAddress').value,
-        companyPhone: document.getElementById('companyPhone').value,
-        companyEmail: document.getElementById('companyEmail').value,
-        companyTaxId: document.getElementById('companyTaxId').value,
-        clientCompany: document.getElementById('clientCompany').value,
-        clientContact: document.getElementById('clientContact').value,
-        clientAddress: document.getElementById('clientAddress').value,
-        invoiceNumber: document.getElementById('invoiceNumber').value,
-        invoiceDate: document.getElementById('invoiceDate').value,
-        dueDate: document.getElementById('dueDate').value,
-        lineItems: getLineItemsData(),
-        subtotal: document.getElementById('subtotalValue').textContent,
-        taxAmount: document.getElementById('taxAmount').textContent,
-        total: document.getElementById('totalValue').textContent,
-        message: document.getElementById('thankYouMessage').value,
-        logo: logoData
-    };
-    
-    // Send data to Figma
-    parent.postMessage({ pluginMessage: { type: 'export-invoice', data: invoiceData } }, '*');
-}
-
-function getLineItemsData() {
-    const rows = document.querySelectorAll('#lineItemsBody tr');
-    const items = [];
-    
-    rows.forEach(row => {
-        const desc = row.querySelector('.item-desc').value;
-        const qty = row.querySelector('.item-qty').value;
-        const rate = row.querySelector('.item-rate').value;
-        const amount = row.querySelector('.item-amount').value;
-        
-        if (desc || qty !== '0' || rate !== '0') {
-            items.push({ desc, qty, rate, amount });
+        // Generate line items HTML for preview
+        function generatePreviewLineItems() {
+            const rows = document.querySelectorAll('#lineItemsBody tr');
+            let html = '';
+            
+            rows.forEach(row => {
+                const desc = row.querySelector('.item-desc').value || '';
+                const qty = row.querySelector('.item-qty').value || '0';
+                const rate = row.querySelector('.item-rate').value || '0';
+                const amount = row.querySelector('.item-amount').value || '$0.00';
+                
+                if (desc || qty !== '0' || rate !== '0') {
+                    html += `
+                        <tr>
+                            <td>${desc}</td>
+                            <td>${qty}</td>
+                            <td>${formatCurrency(parseFloat(rate))}</td>
+                            <td>${amount}</td>
+                        </tr>
+                    `;
+                }
+            });
+            
+            return html || '<tr><td colspan="4" style="text-align: center;">No items added</td></tr>';
         }
-    });
-    
-    return items;
-}
+
+        // Generate totals HTML for preview
+        function generatePreviewTotals() {
+            const subtotal = document.getElementById('subtotalValue').textContent;
+            const taxAmount = document.getElementById('taxAmount').textContent;
+            const total = document.getElementById('totalValue').textContent;
+            const taxRate = document.getElementById('taxRate').value || '0';
+            const discount = document.getElementById('discount').value || '0';
+            
+            return `
+                <div class="preview-total-row">
+                    <span>Subtotal:</span>
+                    <span>${subtotal}</span>
+                </div>
+                <div class="preview-total-row">
+                    <span>Tax (${taxRate}%):</span>
+                    <span>${taxAmount}</span>
+                </div>
+                <div class="preview-total-row">
+                    <span>Discount:</span>
+                    <span>-${formatCurrency(parseFloat(discount))}</span>
+                </div>
+                <div class="preview-total-row final">
+                    <span>TOTAL:</span>
+                    <span>${total}</span>
+                </div>
+            `;
+        }
+
+        // Export invoice data to Figma
+        function exportToFigma() {
+            let logoData = null;
+            const logoPreviewImg = document.getElementById('logoPreviewImg');
+            if (logoPreviewImg && logoPreviewImg.src) {
+                logoData = logoPreviewImg.src;
+            }
+            
+            const invoiceData = {
+                companyName: document.getElementById('companyName').value,
+                companyAddress: document.getElementById('companyAddress').value,
+                companyPhone: document.getElementById('companyPhone').value,
+                companyEmail: document.getElementById('companyEmail').value,
+                companyTaxId: document.getElementById('companyTaxId').value,
+                clientCompany: document.getElementById('clientCompany').value,
+                clientContact: document.getElementById('clientContact').value,
+                clientAddress: document.getElementById('clientAddress').value,
+                invoiceNumber: document.getElementById('invoiceNumber').value,
+                invoiceDate: document.getElementById('invoiceDate').value,
+                dueDate: document.getElementById('dueDate').value,
+                lineItems: getLineItemsData(),
+                subtotal: document.getElementById('subtotalValue').textContent,
+                taxAmount: document.getElementById('taxAmount').textContent,
+                total: document.getElementById('totalValue').textContent,
+                message: document.getElementById('thankYouMessage').value,
+                logo: logoData
+            };
+            
+            parent.postMessage({ pluginMessage: { type: 'export-invoice', data: invoiceData } }, '*');
+        }
+
+        // Get line items data for export
+        function getLineItemsData() {
+            const rows = document.querySelectorAll('#lineItemsBody tr');
+            const items = [];
+            
+            rows.forEach(row => {
+                const desc = row.querySelector('.item-desc').value;
+                const qty = row.querySelector('.item-qty').value;
+                const rate = row.querySelector('.item-rate').value;
+                const amount = row.querySelector('.item-amount').value;
+                
+                if (desc || qty !== '0' || rate !== '0') {
+                    items.push({ desc, qty, rate, amount });
+                }
+            });
+            
+            return items;
+        }
     </script>
 </body>
 </html>
