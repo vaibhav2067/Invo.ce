@@ -351,6 +351,65 @@
         .modal-close:hover {
             background: #545b62;
         }
+
+        /* Terms & Conditions specific styles */
+        .terms-checkbox {
+            margin-bottom: 12px;
+        }
+
+        .terms-checkbox label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-bottom: 0;
+        }
+
+        .terms-checkbox input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            margin: 0;
+        }
+
+        /* Hide scrollbar but keep scrolling functionality */
+        .terms-textarea {
+            font-size: 12px;
+            line-height: 1.4;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        .terms-textarea::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .terms-textarea:disabled {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Hide scrollbars for all textareas */
+        textarea {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        textarea::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        /* Preview terms styles */
+        .preview-terms {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -483,6 +542,29 @@
             <div class="section-title">Message</div>
             <textarea id="thankYouMessage" rows="3" placeholder="Thank you for your business!"></textarea>
         </div>
+        
+        <!-- Terms & Conditions Section -->
+        <div class="form-section">
+            <div class="section-title">Terms & Conditions</div>
+            
+            <!-- Checkbox for default terms -->
+            <div class="form-group terms-checkbox">
+                <label>
+                    <input type="checkbox" id="useDefaultTerms"> 
+                    Use default terms and conditions
+                </label>
+            </div>
+            
+            <!-- Textarea for custom terms -->
+            <div class="form-group">
+                <label>Custom Terms (optional)</label>
+                <textarea 
+                    id="termsConditions" 
+                    rows="4"
+                    class="terms-textarea"
+                    placeholder="Type custom terms or press Tab to insert template"></textarea>
+            </div>
+        </div>
     </div>
 
     <!-- Preview container (hidden by default) -->
@@ -541,7 +623,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeLineItems();
             setupEventListeners();
-            setDefaultDates();
+            setDefaultDates(); // Initialize terms textarea
         });
 
         // Set default dates for invoice and due date
@@ -571,6 +653,10 @@
             document.getElementById('logoUpload').addEventListener('change', handleLogoUpload);
             document.getElementById('taxRate').addEventListener('input', calculateTotals);
             document.getElementById('discount').addEventListener('input', calculateTotals);
+            document.getElementById('useDefaultTerms').addEventListener('change', handleTermsCheckbox);
+            document.getElementById('termsConditions').addEventListener('focus', handleTermsFocus);
+            document.getElementById('termsConditions').addEventListener('keydown', handleTermsKeydown);
+            document.getElementById('termsConditions').addEventListener('input', handleTermsInput);
         }
 
         // Show information modal
@@ -596,6 +682,63 @@
                 }
                 reader.readAsDataURL(file);
             }
+        }
+
+        // Track if user has modified terms manually
+        let termsModified = false;
+        const defaultTermsText = `Payment due within 30 days
+Late fee: 1.5% monthly interest on overdue amounts
+Accepted payment methods: Bank transfer, credit card
+All amounts payable in USD
+Disputes must be submitted within 7 days of invoice date`;
+
+        // Handle checkbox change
+        function handleTermsCheckbox(event) {
+            const termsTextarea = document.getElementById('termsConditions');
+            const isChecked = event.target.checked;
+            
+            if (isChecked) {
+                // If checkbox checked, set to default terms and disable textarea
+                termsTextarea.value = defaultTermsText;
+                termsTextarea.disabled = true;
+                termsTextarea.classList.add('disabled');
+                termsModified = false;
+            } else {
+                // FIX: When unchecked, clear the textarea and enable it
+                termsTextarea.disabled = false;
+                termsTextarea.classList.remove('disabled');
+                termsTextarea.value = ''; // Clear the textarea
+                termsModified = false;
+            }
+        }
+
+        // Handle textarea focus (click)
+        function handleTermsFocus(event) {
+            const termsTextarea = document.getElementById('termsConditions');
+            
+            // If this is the first focus and text is the default, clear it for typing
+            if (!termsModified && termsTextarea.value === defaultTermsText) {
+                termsTextarea.value = '';
+                termsModified = true; // Mark as modified so we don't clear again
+            }
+        }
+
+        // Handle keydown (for Tab key detection)
+function handleTermsKeydown(event) {
+    if (event.key === 'Tab') {
+        const termsTextarea = document.getElementById('termsConditions');
+        
+        // FIX: Check if field is empty or has default text
+        if (!termsModified && (!termsTextarea.value || termsTextarea.value.trim() === '' || termsTextarea.value === defaultTermsText)) {
+            termsTextarea.value = defaultTermsText;
+            termsModified = true;
+        }
+    }
+}
+
+        // Track when user manually types
+        function handleTermsInput(event) {
+            termsModified = true;
         }
 
         // Add a new line item row to the table
@@ -681,6 +824,15 @@
                 `<img src="${logoPreviewImg.src}" style="max-width: 60px; max-height: 30px; margin-bottom: 12px;">` : 
                 '<div class="preview-logo"></div>';
             
+            // Get terms data for preview
+            const useDefaultTerms = document.getElementById('useDefaultTerms').checked;
+            let termsConditions = document.getElementById('termsConditions').value;
+            
+            // If using default terms but textarea is empty, use default text
+            if (useDefaultTerms && (!termsConditions || termsConditions.trim() === '')) {
+                termsConditions = defaultTermsText;
+            }
+            
             preview.innerHTML = `
                 <div class="preview-header">
                     <div class="preview-company">
@@ -729,6 +881,14 @@
                 <div class="preview-message">
                     ${document.getElementById('thankYouMessage').value || 'Thank you for your business!'}
                 </div>
+                
+                <!-- NEW: Terms & Conditions Section -->
+                ${termsConditions && termsConditions.trim() !== '' ? `
+                    <div class="preview-terms">
+                        <strong>Terms and Conditions:</strong><br>
+                        ${termsConditions.replace(/\n/g, '<br>')}
+                    </div>
+                ` : ''}
             `;
         }
 
@@ -794,6 +954,15 @@
                 logoData = logoPreviewImg.src;
             }
             
+            // Get terms data
+            const useDefaultTerms = document.getElementById('useDefaultTerms').checked;
+            let termsConditions = document.getElementById('termsConditions').value;
+            
+            // If using default terms but textarea is disabled/empty, use default text
+            if (useDefaultTerms && (!termsConditions || termsConditions.trim() === '')) {
+                termsConditions = defaultTermsText;
+            }
+            
             const invoiceData = {
                 companyName: document.getElementById('companyName').value,
                 companyAddress: document.getElementById('companyAddress').value,
@@ -811,6 +980,8 @@
                 taxAmount: document.getElementById('taxAmount').textContent,
                 total: document.getElementById('totalValue').textContent,
                 message: document.getElementById('thankYouMessage').value,
+                termsConditions: termsConditions,
+                useDefaultTerms: useDefaultTerms,
                 logo: logoData
             };
             

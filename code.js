@@ -20,12 +20,12 @@ async function createInvoiceFrame(invoiceData) {
             figma.root.appendChild(invoicesPage);
         }
         
-        figma.currentPage = invoicesPage;
+        await figma.setCurrentPageAsync(invoicesPage);
         
         // Create invoice artboard - YOUR CHANGE: 600 -> 420
         const invoiceFrame = figma.createFrame();
         invoiceFrame.name = `Invoice-${invoiceData.invoiceNumber || '001'}`;
-        invoiceFrame.resize(420, 800); // CHANGED: 600 -> 420
+        invoiceFrame.resize(420, 900); // CHANGED: 600 -> 420
         invoiceFrame.x = 100;
         invoiceFrame.y = 100;
         invoiceFrame.fills = [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }];
@@ -149,7 +149,7 @@ async function addInvoiceContent(frame, data) {
     );
     frame.appendChild(invoiceTitle);
     
-    // Invoice details row - UPDATED: width from 520 to 340 to match header
+    // Invoice details row - UPDATED: width from 520 to 340
     const detailsRow = figma.createFrame();
     detailsRow.layoutMode = 'HORIZONTAL';
     detailsRow.primaryAxisAlignItems = 'SPACE_BETWEEN';
@@ -279,6 +279,28 @@ async function addInvoiceContent(frame, data) {
         messageText.fills = [{ type: 'SOLID', color: { r: 0.4, g: 0.4, b: 0.4 } }];
         frame.appendChild(messageText);
     }
+    
+    // NEW: Terms & Conditions Section - UPDATED: width from 520 to 340
+    if (data.termsConditions && data.termsConditions.trim() !== '') {
+        // Add separator line
+        const termsSeparator = figma.createLine();
+        termsSeparator.resize(340, 0); // CHANGED: 520 -> 340
+        termsSeparator.strokes = [{ type: 'SOLID', color: { r: 0.8, g: 0.8, b: 0.8 } }];
+        // Remove the manual y positioning and let the frame layout handle it
+        frame.appendChild(termsSeparator);
+
+        // Add "Terms and Conditions" label (bold, centered)
+    const termsLabel = createText("Terms and Conditions", 11, 'CENTER', true);
+    termsLabel.resize(340, 13); // CHANGED: 520 -> 340
+    termsLabel.fills = [{ type: 'SOLID', color: { r: 0.2, g: 0.2, b: 0.2 } }];
+    frame.appendChild(termsLabel);
+        
+        // Add terms text (centered, smaller font)
+        const termsText = createText(data.termsConditions, 10, 'CENTER');
+        termsText.resize(340, 60); // CHANGED: 520 -> 340
+        termsText.fills = [{ type: 'SOLID', color: { r: 0.4, g: 0.4, b: 0.4 } }];
+        frame.appendChild(termsText);
+}
 }
 
 // FIXED: Simplified createImageNode for Figma plugin environment

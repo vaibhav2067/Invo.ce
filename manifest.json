@@ -1,12 +1,12 @@
 {
   "name": "Invoice Generator",
-  "id": "your-plugin-id",
+  "id": "1556249669292238318",
   "api": "1.0.0",
   "main": "code.js",
   "ui": "ui.html",
   "capabilities": [],
   "enableProposedApi": false,
-  "documentAccess": "dynamic",
+  "documentAccess": "dynamic-page",
   "editorType": ["figma"],
   "networkAccess": {
     "allowedDomains": ["none"]
