@@ -225,11 +225,12 @@ async function addInvoiceContent(frame, data) {
             const desc = item.desc || '';
             const qty = item.qty || '0';
             const rate = item.rate || '0';
-            const amount = item.amount || '$0.00';
+            const amount = item.amount || '0.00';
             
+            // FIXED: Use the formatted values from the UI
             const descText = createText(desc, 11, 'LEFT');
             const qtyText = createText(qty, 11, 'CENTER');
-            const rateText = createText(`$${parseFloat(rate).toFixed(2)}`, 11, 'CENTER');
+            const rateText = createText(item.formattedRate || formatCurrencyFallback(parseFloat(rate), data.currency), 11, 'CENTER');
             const amountText = createText(amount, 11, 'RIGHT');
             
             // Set consistent widths - UPDATED: same as header widths
@@ -262,6 +263,7 @@ async function addInvoiceContent(frame, data) {
     totalsFrame.fills = [];
     totalsFrame.x = 200; // CHANGED: 340 -> 200 (adjusted for new width)
     
+    // Use the formatted values from data (they already include proper currency formatting)
     const subtotalText = createText(`Subtotal: ${data.subtotal || '$0.00'}`, 12, 'LEFT');
     const taxText = createText(`Tax: ${data.taxAmount || '$0.00'}`, 12, 'LEFT');
     const totalText = createText(`TOTAL: ${data.total || '$0.00'}`, 14, 'LEFT', true);
@@ -286,21 +288,34 @@ async function addInvoiceContent(frame, data) {
         const termsSeparator = figma.createLine();
         termsSeparator.resize(340, 0); // CHANGED: 520 -> 340
         termsSeparator.strokes = [{ type: 'SOLID', color: { r: 0.8, g: 0.8, b: 0.8 } }];
-        // Remove the manual y positioning and let the frame layout handle it
         frame.appendChild(termsSeparator);
 
         // Add "Terms and Conditions" label (bold, centered)
-    const termsLabel = createText("Terms and Conditions", 11, 'CENTER', true);
-    termsLabel.resize(340, 13); // CHANGED: 520 -> 340
-    termsLabel.fills = [{ type: 'SOLID', color: { r: 0.2, g: 0.2, b: 0.2 } }];
-    frame.appendChild(termsLabel);
+        const termsLabel = createText("Terms and Conditions", 11, 'CENTER', true);
+        termsLabel.resize(340, 13); // CHANGED: 520 -> 340
+        termsLabel.fills = [{ type: 'SOLID', color: { r: 0.2, g: 0.2, b: 0.2 } }];
+        frame.appendChild(termsLabel);
         
         // Add terms text (centered, smaller font)
         const termsText = createText(data.termsConditions, 10, 'CENTER');
         termsText.resize(340, 60); // CHANGED: 520 -> 340
         termsText.fills = [{ type: 'SOLID', color: { r: 0.4, g: 0.4, b: 0.4 } }];
         frame.appendChild(termsText);
+    }
 }
+
+// NEW: Fallback currency formatting for code.js
+function formatCurrencyFallback(amount, currencyCode) {
+    const symbols = {
+        'USD': '$', 'EUR': '€', 'GBP': '£', 'JPY': '¥', 
+        'CAD': 'C$', 'AUD': 'A$', 'CHF': 'CHF', 
+        'CNY': '¥', 'INR': '₹', 'BRL': 'R$'
+    };
+    
+    const symbol = symbols[currencyCode] || '$';
+    
+    // Basic formatting - for more advanced formatting, we rely on the UI
+    return `${symbol}${amount.toFixed(2)}`;
 }
 
 // FIXED: Simplified createImageNode for Figma plugin environment

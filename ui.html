@@ -80,7 +80,7 @@
             color: #333;
         }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 8px;
             border: 1px solid #e5e5e5;
@@ -88,7 +88,7 @@
             font-size: 12px;
         }
 
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #0099ff;
         }
@@ -497,6 +497,21 @@
         <!-- Line items section -->
         <div class="form-section">
             <div class="section-title">Line Items</div>
+            <div class="form-group">
+                <label>Currency</label>
+                <select id="currencySelect" style="width: 100%; padding: 8px; border: 1px solid #e5e5e5; border-radius: 4px; font-size: 12px;">
+                    <option value="USD">USD - US Dollar ($)</option>
+                    <option value="EUR">EUR - Euro (€)</option>
+                    <option value="GBP">GBP - British Pound (£)</option>
+                    <option value="JPY">JPY - Japanese Yen (¥)</option>
+                    <option value="CAD">CAD - Canadian Dollar (C$)</option>
+                    <option value="AUD">AUD - Australian Dollar (A$)</option>
+                    <option value="CHF">CHF - Swiss Franc (CHF)</option>
+                    <option value="CNY">CNY - Chinese Yuan (¥)</option>
+                    <option value="INR">INR - Indian Rupee (₹)</option>
+                    <option value="BRL">BRL - Brazilian Real (R$)</option>
+                </select>
+            </div>
             <table class="line-items" id="lineItemsTable">
                 <thead>
                     <tr>
@@ -621,9 +636,11 @@
     <script>
         // Initialize the application when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            initializeLineItems();
+            setDefaultDates(); 
             setupEventListeners();
-            setDefaultDates(); // Initialize terms textarea
+            initializeCurrency();
+            initializeLineItems();
+            calculateTotals(); // NEW: Initialize calculations with currency
         });
 
         // Set default dates for invoice and due date
@@ -657,6 +674,40 @@
             document.getElementById('termsConditions').addEventListener('focus', handleTermsFocus);
             document.getElementById('termsConditions').addEventListener('keydown', handleTermsKeydown);
             document.getElementById('termsConditions').addEventListener('input', handleTermsInput);
+            
+            // NEW: Currency change listener
+            document.getElementById('currencySelect').addEventListener('change', function() {
+                calculateTotals();
+            });
+        }
+
+        // NEW: Currency formatting function
+        function formatCurrency(amount, currencyCode) {
+            const formatters = {
+                'USD': new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }),
+                'EUR': new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }),
+                'GBP': new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }),
+                'JPY': new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', maximumFractionDigits: 0 }),
+                'CAD': new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' }),
+                'AUD': new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }),
+                'CHF': new Intl.NumberFormat('de-CH', { style: 'currency', currency: 'CHF' }),
+                'CNY': new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }),
+                'INR': new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }),
+                'BRL': new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
+            };
+            
+            const formatter = formatters[currencyCode] || formatters['USD'];
+            return formatter.format(amount);
+        }
+
+        // NEW: Get currency symbol for display
+        function getCurrencySymbol(currencyCode) {
+            const symbols = {
+                'USD': '$', 'EUR': '€', 'GBP': '£', 'JPY': '¥', 
+                'CAD': 'C$', 'AUD': 'A$', 'CHF': 'CHF ', 
+                'CNY': '¥', 'INR': '₹', 'BRL': 'R$'
+            };
+            return symbols[currencyCode] || '$';
         }
 
         // Show information modal
@@ -686,10 +737,11 @@
 
         // Track if user has modified terms manually
         let termsModified = false;
+        // UPDATED: Generic currency reference in default terms
         const defaultTermsText = `Payment due within 30 days
 Late fee: 1.5% monthly interest on overdue amounts
 Accepted payment methods: Bank transfer, credit card
-All amounts payable in USD
+All amounts payable in the currency specified above
 Disputes must be submitted within 7 days of invoice date`;
 
         // Handle checkbox change
@@ -724,17 +776,17 @@ Disputes must be submitted within 7 days of invoice date`;
         }
 
         // Handle keydown (for Tab key detection)
-function handleTermsKeydown(event) {
-    if (event.key === 'Tab') {
-        const termsTextarea = document.getElementById('termsConditions');
-        
-        // FIX: Check if field is empty or has default text
-        if (!termsModified && (!termsTextarea.value || termsTextarea.value.trim() === '' || termsTextarea.value === defaultTermsText)) {
-            termsTextarea.value = defaultTermsText;
-            termsModified = true;
+        function handleTermsKeydown(event) {
+            if (event.key === 'Tab') {
+                const termsTextarea = document.getElementById('termsConditions');
+                
+                // FIX: Check if field is empty or has default text
+                if (!termsModified && (!termsTextarea.value || termsTextarea.value.trim() === '' || termsTextarea.value === defaultTermsText)) {
+                    termsTextarea.value = defaultTermsText;
+                    termsModified = true;
+                }
+            }
         }
-    }
-}
 
         // Track when user manually types
         function handleTermsInput(event) {
@@ -745,11 +797,14 @@ function handleTermsKeydown(event) {
         function addLineItem() {
             const tbody = document.getElementById('lineItemsBody');
             const row = document.createElement('tr');
+            const currency = document.getElementById('currencySelect').value;
+            const initialAmount = formatCurrency(0, currency);
+            
             row.innerHTML = `
                 <td><input type="text" class="item-desc" placeholder="Item description"></td>
                 <td><input type="number" class="item-qty" value="1" min="0"></td>
                 <td><input type="number" class="item-rate" value="0" min="0" step="0.01"></td>
-                <td><input type="text" class="item-amount" value="$0.00" readonly></td>
+                <td><input type="text" class="item-amount" value="${initialAmount}" readonly></td>
             `;
             
             tbody.appendChild(row);
@@ -766,8 +821,9 @@ function handleTermsKeydown(event) {
             const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
             const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
             const amount = qty * rate;
+            const currency = document.getElementById('currencySelect').value;
             
-            row.querySelector('.item-amount').value = formatCurrency(amount);
+            row.querySelector('.item-amount').value = formatCurrency(amount, currency);
             calculateTotals();
         }
 
@@ -775,10 +831,13 @@ function handleTermsKeydown(event) {
         function calculateTotals() {
             const rows = document.querySelectorAll('#lineItemsBody tr');
             let subtotal = 0;
+            const currency = document.getElementById('currencySelect').value;
             
             rows.forEach(row => {
                 const amountText = row.querySelector('.item-amount').value;
-                const amount = parseFloat(amountText.replace(/[^0-9.-]+/g,"")) || 0;
+                // Extract numeric value from formatted currency string
+                const numericValue = amountText.replace(/[^\d.,]/g, '').replace(',', '.');
+                const amount = parseFloat(numericValue) || 0;
                 subtotal += amount;
             });
             
@@ -788,14 +847,9 @@ function handleTermsKeydown(event) {
             const taxAmount = subtotal * (taxRate / 100);
             const total = subtotal + taxAmount - discount;
             
-            document.getElementById('subtotalValue').textContent = formatCurrency(subtotal);
-            document.getElementById('taxAmount').textContent = formatCurrency(taxAmount);
-            document.getElementById('totalValue').textContent = formatCurrency(total);
-        }
-
-        // Format number as currency
-        function formatCurrency(amount) {
-            return '$' + amount.toFixed(2);
+            document.getElementById('subtotalValue').textContent = formatCurrency(subtotal, currency);
+            document.getElementById('taxAmount').textContent = formatCurrency(taxAmount, currency);
+            document.getElementById('totalValue').textContent = formatCurrency(total, currency);
         }
 
         // Show preview of the invoice
@@ -818,6 +872,7 @@ function handleTermsKeydown(event) {
         // Generate the preview HTML
         function generatePreview() {
             const preview = document.getElementById('invoicePreview');
+            const currency = document.getElementById('currencySelect').value;
             
             const logoPreviewImg = document.getElementById('logoPreviewImg');
             const logoHtml = logoPreviewImg && logoPreviewImg.src ? 
@@ -895,20 +950,21 @@ function handleTermsKeydown(event) {
         // Generate line items HTML for preview
         function generatePreviewLineItems() {
             const rows = document.querySelectorAll('#lineItemsBody tr');
+            const currency = document.getElementById('currencySelect').value;
             let html = '';
             
             rows.forEach(row => {
                 const desc = row.querySelector('.item-desc').value || '';
                 const qty = row.querySelector('.item-qty').value || '0';
-                const rate = row.querySelector('.item-rate').value || '0';
-                const amount = row.querySelector('.item-amount').value || '$0.00';
+                const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
+                const amount = row.querySelector('.item-amount').value || formatCurrency(0, currency);
                 
-                if (desc || qty !== '0' || rate !== '0') {
+                if (desc || qty !== '0' || rate !== 0) {
                     html += `
                         <tr>
                             <td>${desc}</td>
                             <td>${qty}</td>
-                            <td>${formatCurrency(parseFloat(rate))}</td>
+                            <td>${formatCurrency(rate, currency)}</td>
                             <td>${amount}</td>
                         </tr>
                     `;
@@ -920,28 +976,32 @@ function handleTermsKeydown(event) {
 
         // Generate totals HTML for preview
         function generatePreviewTotals() {
-            const subtotal = document.getElementById('subtotalValue').textContent;
-            const taxAmount = document.getElementById('taxAmount').textContent;
-            const total = document.getElementById('totalValue').textContent;
+            const currency = document.getElementById('currencySelect').value;
+            
+            // Extract numeric values from formatted currency strings
+            const subtotalText = document.getElementById('subtotalValue').textContent;
+            const taxAmountText = document.getElementById('taxAmount').textContent;
+            const totalText = document.getElementById('totalValue').textContent;
+            
             const taxRate = document.getElementById('taxRate').value || '0';
-            const discount = document.getElementById('discount').value || '0';
+            const discount = parseFloat(document.getElementById('discount').value) || 0;
             
             return `
                 <div class="preview-total-row">
                     <span>Subtotal:</span>
-                    <span>${subtotal}</span>
+                    <span>${subtotalText}</span>
                 </div>
                 <div class="preview-total-row">
                     <span>Tax (${taxRate}%):</span>
-                    <span>${taxAmount}</span>
+                    <span>${taxAmountText}</span>
                 </div>
                 <div class="preview-total-row">
                     <span>Discount:</span>
-                    <span>-${formatCurrency(parseFloat(discount))}</span>
+                    <span>-${formatCurrency(discount, currency)}</span>
                 </div>
                 <div class="preview-total-row final">
                     <span>TOTAL:</span>
-                    <span>${total}</span>
+                    <span>${totalText}</span>
                 </div>
             `;
         }
@@ -963,6 +1023,9 @@ function handleTermsKeydown(event) {
                 termsConditions = defaultTermsText;
             }
             
+            const currency = document.getElementById('currencySelect').value;
+            const currencySymbol = getCurrencySymbol(currency);
+            
             const invoiceData = {
                 companyName: document.getElementById('companyName').value,
                 companyAddress: document.getElementById('companyAddress').value,
@@ -982,7 +1045,9 @@ function handleTermsKeydown(event) {
                 message: document.getElementById('thankYouMessage').value,
                 termsConditions: termsConditions,
                 useDefaultTerms: useDefaultTerms,
-                logo: logoData
+                logo: logoData,
+                currency: currency, // NEW: Add currency to export
+                currencySymbol: currencySymbol // NEW: Add currency symbol
             };
             
             parent.postMessage({ pluginMessage: { type: 'export-invoice', data: invoiceData } }, '*');
@@ -991,6 +1056,7 @@ function handleTermsKeydown(event) {
         // Get line items data for export
         function getLineItemsData() {
             const rows = document.querySelectorAll('#lineItemsBody tr');
+            const currency = document.getElementById('currencySelect').value;
             const items = [];
             
             rows.forEach(row => {
@@ -1000,7 +1066,13 @@ function handleTermsKeydown(event) {
                 const amount = row.querySelector('.item-amount').value;
                 
                 if (desc || qty !== '0' || rate !== '0') {
-                    items.push({ desc, qty, rate, amount });
+                    items.push({ 
+                        desc, 
+                        qty, 
+                        rate, 
+                        amount,
+                        formattedRate: formatCurrency(parseFloat(rate) || 0, currency) // NEW: Add formatted rate
+                    });
                 }
             });
             
