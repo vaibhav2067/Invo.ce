@@ -9,25 +9,25 @@ figma.ui.onmessage = async (msg) => {
 
 async function createInvoiceFrame(invoiceData) {
     try {
-        // Create or find Invoices page (FIXED: variable scope)
-        let invoicesPage = figma.root.children.find(page => 
-            page.name === "Invoices" && page.type === "PAGE"
-        );
+        // Use the CURRENT page instead of creating a new "Invoices" page
+        const currentPage = figma.currentPage;
         
-        if (!invoicesPage) {
-            invoicesPage = figma.createPage();
-            invoicesPage.name = "Invoices";
-            figma.root.appendChild(invoicesPage);
-        }
-        
-        await figma.setCurrentPageAsync(invoicesPage);
-        
-        // Create invoice artboard - YOUR CHANGE: 600 -> 420
+        // Create invoice artboard
         const invoiceFrame = figma.createFrame();
         invoiceFrame.name = `Invoice-${invoiceData.invoiceNumber || '001'}`;
-        invoiceFrame.resize(420, 900); // CHANGED: 600 -> 420
-        invoiceFrame.x = 100;
-        invoiceFrame.y = 100;
+        invoiceFrame.resize(420, 900);
+        
+        // Position the frame with some spacing from existing elements
+        const existingFrames = currentPage.children.filter(node => node.type === 'FRAME');
+        if (existingFrames.length > 0) {
+            const lastFrame = existingFrames[existingFrames.length - 1];
+            invoiceFrame.x = lastFrame.x + lastFrame.width + 100;
+            invoiceFrame.y = 100;
+        } else {
+            invoiceFrame.x = 100;
+            invoiceFrame.y = 100;
+        }
+        
         invoiceFrame.fills = [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }];
         invoiceFrame.clipsContent = false;
         invoiceFrame.layoutMode = 'VERTICAL';
@@ -36,9 +36,9 @@ async function createInvoiceFrame(invoiceData) {
         invoiceFrame.paddingRight = 40;
         invoiceFrame.paddingTop = 40;
         invoiceFrame.paddingBottom = 40;
-        invoiceFrame.cornerRadius = 16; 
+        invoiceFrame.cornerRadius = 16;
 
-        // ADDED: Drop shadow effect
+        // Drop shadow effect
         invoiceFrame.effects = [
             {
                 type: 'DROP_SHADOW',
@@ -58,7 +58,7 @@ async function createInvoiceFrame(invoiceData) {
         figma.currentPage.selection = [invoiceFrame];
         figma.viewport.scrollAndZoomIntoView([invoiceFrame]);
         
-        figma.notify('Invoice created successfully!');
+        figma.notify('Invoice created successfully on current page!');
         
     } catch (error) {
         console.error('Error creating invoice:', error);
