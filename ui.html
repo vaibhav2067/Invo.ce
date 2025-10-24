@@ -2,6 +2,37 @@
 <html>
 <head>
     <style>
+        /* === THEME VARIABLES === */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e5e5e5;
+            --header-bg: #ffffff;
+            --primary-color: #0099ff;
+            --primary-light: #e8f7ff;
+            --input-bg: #ffffff;
+            --input-border: #d0d0d0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --secondary-bg: #f8f9fa;
+            --modal-bg: #ffffff;
+        }
+
+        /* Dark Theme Variables */
+        [data-theme="dark"] {
+            --bg-color: #2d2d2d;
+            --text-color: #ffffff;
+            --border-color: #444444;
+            --header-bg: #2d2d2d;
+            --primary-color: #4dabf7;
+            --primary-light: #1a365d;
+            --input-bg: #3d3d3d;
+            --input-border: #555555;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --secondary-bg: #3d3d3d;
+            --modal-bg: #3d3d3d;
+        }
+        /* === END THEME VARIABLES === */
+
         * {
             margin: 0;
             padding: 0;
@@ -10,7 +41,7 @@
         }
 
         body {
-            background: #ffffff;
+            background: var(--bg-color); /* CHANGED: theme variable */
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -18,42 +49,98 @@
 
         .header {
             height: 50px;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid var(--border-color); /* CHANGED: theme variable */
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 16px;
             flex-shrink: 0;
+            background: var(--header-bg); /* CHANGED: theme variable */
         }
 
         .plugin-title {
             font-size: 14px;
             font-weight: 600;
-            color: #000;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
-        .info-button {
-            width: 24px;
-            height: 24px;
-            border: 1px solid #e5e5e5;
-            border-radius: 4px;
-            background: none;
+        /* Header Actions */
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Hamburger Button */
+        .hamburger-button {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border-color); /* CHANGED: theme variable */
+            border-radius: 6px;
+            background: var(--input-bg); /* CHANGED: theme variable */
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            transition: all 0.2s ease;
         }
 
-        .info-button svg {
-            width: 16px;
-            height: 16px;
+        .hamburger-button:hover {
+            background: var(--primary-light); /* CHANGED: theme variable */
+            border-color: var(--input-border); /* CHANGED: theme variable */
+        }
+
+        .hamburger-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Hamburger Menu Dropdown */
+        .hamburger-menu {
+            display: none;
+            position: absolute;
+            top: 45px;
+            right: 16px;
+            background: var(--bg-color); /* CHANGED: theme variable */
+            border: 1px solid var(--border-color); /* CHANGED: theme variable */
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow-color); /* CHANGED: theme variable */
+            width: 180px;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .hamburger-menu.show {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--text-color); /* CHANGED: theme variable */
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color); /* CHANGED: theme variable */
+            transition: background-color 0.2s ease;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background: var(--primary-light); /* CHANGED: theme variable */
+        }
+
+        .menu-item svg {
+            opacity: 0.7;
         }
 
         .main-content {
             flex: 1;
             overflow-y: auto;
             padding: 16px;
+            background: var(--bg-color); /* CHANGED: theme variable */
         }
 
         .form-section {
@@ -64,8 +151,8 @@
             font-size: 12px;
             font-weight: 600;
             margin-bottom: 12px;
-            color: #1a1a1a; 
-            border-left: 3px solid #0099ff;
+            color: var(--text-color); /* CHANGED: theme variable */
+            border-left: 3px solid var(--primary-color); /* CHANGED: theme variable */
             padding-left: 12px;
         }
 
@@ -84,31 +171,34 @@
             font-size: 11px;
             font-weight: 500;
             margin-bottom: 4px;
-            color: #333;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         input, textarea, select {
             width: 100%;
             padding: 8px;
-            border: 1px solid #d0d0d0;;
+            background: var(--input-bg); /* CHANGED: theme variable */
+            border: 1px solid var(--input-border); /* CHANGED: theme variable */
             border-radius: 4px;
             font-size: 12px;
             transition: all 0.2s ease;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         input:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: #0099ff;
-            box-shadow: 0 0 0 3px rgba(0,153,255,0.1);
+            border-color: var(--primary-color); /* CHANGED: theme variable */
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent); /* CHANGED: theme variable */
         }
 
         .line-items {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 12px;
-            background: white;
+            background: var(--input-bg); /* CHANGED: theme variable */
             border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color); /* NEW: Added border for dark theme */
+            box-shadow: 0 1px 3px var(--shadow-color); /* CHANGED: theme variable */
         }
 
         .line-items th {
@@ -116,8 +206,9 @@
             font-size: 11px;
             font-weight: 600;
             padding: 8px 4px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
+            background: var(--secondary-bg); /* CHANGED: theme variable */
+            border-bottom: 1px solid var(--border-color); /* CHANGED: theme variable */
+            color: var(--text-color); /* NEW: Added text color */
         }
 
         .line-items td {
@@ -125,15 +216,17 @@
         }
 
         .line-items input {
-            border: 1px solid #e5e5e5;
+            border: 1px solid var(--border-color); /* CHANGED: theme variable */
             border-radius: 3px;
             padding: 6px;
+            background: var(--input-bg); /* CHANGED: theme variable */
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         .add-item-btn {
-            background: none;
-            border: 1px dashed #e5e5e5;
-            color: #666;
+            background: var(--input-bg); /* CHANGED: theme variable */
+            border: 1px dashed var(--border-color); /* CHANGED: theme variable */
+            color: var(--text-color); /* CHANGED: theme variable */
             padding: 8px;
             border-radius: 4px;
             cursor: pointer;
@@ -142,7 +235,7 @@
         }
 
         .calculations {
-            border-top: 1px solid #e5e5e5;
+            border-top: 1px solid var(--border-color); /* CHANGED: theme variable */
             padding-top: 12px;
         }
 
@@ -151,52 +244,56 @@
             justify-content: space-between;
             margin-bottom: 6px;
             font-size: 12px;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         .calc-row.total {
             font-weight: 600;
-            border-top: 1px solid #e5e5e5;
+            border-top: 1px solid var(--border-color); /* CHANGED: theme variable */
             padding-top: 8px;
             margin-top: 8px;
         }
 
         .footer {
             height: 60px;
-            border-top: 1px solid #e5e5e5;
+            border-top: 1px solid var(--border-color); /* CHANGED: theme variable */
             display: flex;
             align-items: center;
             justify-content: flex-end;
             padding: 0 16px;
             flex-shrink: 0;
+            background: var(--header-bg); /* CHANGED: theme variable */
         }
 
         .footer-btn {
             padding: 8px 16px;
-            border: 1px solid #d0d0d0;
+            border: 1px solid var(--input-border); /* CHANGED: theme variable */
             border-radius: 4px;
-            background: linear-gradient(white, #e8faff);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            background: var(--input-bg); /* CHANGED: theme variable */
+            box-shadow: 0 1px 2px var(--shadow-color); /* CHANGED: theme variable */
             cursor: pointer;
             font-size: 12px;
             margin-left: 8px;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         .footer-btn.primary {
-            background: #0099ff;
+            background: var(--primary-color); /* CHANGED: theme variable */
             color: white;
-            border-color: #0099ff;
+            border-color: var(--primary-color); /* CHANGED: theme variable */
         }
 
         .preview-container {
             display: none;
             padding: 20px;
+            background: var(--bg-color); /* CHANGED: theme variable */
         }
 
         .invoice-preview {
-            border: 1px solid #e5e5e5;
+            border: 1px solid var(--border-color); /* CHANGED: theme variable */
             border-radius: 8px;
             padding: 24px;
-            background: white;
+            background: var(--input-bg); /* CHANGED: theme variable */
         }
 
         .preview-header {
@@ -208,7 +305,7 @@
         .preview-logo {
             width: 40px;
             height: 40px;
-            background: #f0f0f0;
+            background: var(--secondary-bg); /* CHANGED: theme variable */
             border-radius: 4px;
             margin-bottom: 12px;
         }
@@ -216,12 +313,14 @@
         .preview-company, .preview-client {
             font-size: 12px;
             line-height: 1.4;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         .preview-title {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 20px;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         .preview-table {
@@ -233,20 +332,22 @@
         .preview-table th {
             text-align: left;
             padding: 12px 8px;
-            border-bottom: 2px solid #e5e5e5;
+            border-bottom: 2px solid var(--border-color); /* CHANGED: theme variable */
             font-size: 11px;
             font-weight: 600;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         .preview-table td {
             padding: 12px 8px;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid var(--border-color); /* CHANGED: theme variable */
             font-size: 12px;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         .preview-totals {
             margin-top: 20px;
-            border-top: 2px solid #e5e5e5;
+            border-top: 2px solid var(--border-color); /* CHANGED: theme variable */
             padding-top: 20px;
         }
 
@@ -255,6 +356,7 @@
             justify-content: space-between;
             margin-bottom: 6px;
             font-size: 12px;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         .preview-total-row.final {
@@ -265,9 +367,9 @@
         .preview-message {
             margin-top: 30px;
             padding-top: 20px;
-            border-top: 1px solid #f0f0f0;
+            border-top: 1px solid var(--border-color); /* CHANGED: theme variable */
             font-size: 11px;
-            color: #666;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         .modal {
@@ -286,13 +388,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: white;
+            background: var(--modal-bg); /* CHANGED: theme variable */
             padding: 20px;
             border-radius: 8px;
             width: 400px;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px var(--shadow-color); /* CHANGED: theme variable */
             scrollbar-width: none; /* Firefox */
             -ms-overflow-style: none;
         }
@@ -303,14 +405,14 @@
 
         .modal-content h3 {
             margin: 0 0 12px 0;
-            color: #333;
+            color: var(--text-color); /* CHANGED: theme variable */
             font-size: 18px;
             text-align: center;
         }
 
         .modal-content p {
             margin: 0 0 16px 0;
-            color: #666;
+            color: var(--text-color); /* CHANGED: theme variable */
             font-size: 14px;
             line-height: 1.4;
         }
@@ -318,14 +420,14 @@
         .message-section {
             margin: 16px 0;
             padding: 12px;
-            background: #f5f5f5;
+            background: var(--primary-light); /* CHANGED: theme variable */
             border-radius: 6px;
-            border-left: 3px solid #007bff;
+            border-left: 3px solid var(--primary-color); /* CHANGED: theme variable */
         }
 
         .message-section h4 {
             margin: 0 0 8px 0;
-            color: #444;
+            color: var(--text-color); /* CHANGED: theme variable */
             font-size: 14px;
             font-weight: 600;
         }
@@ -338,13 +440,13 @@
         .message-section li {
             margin-bottom: 4px;
             font-size: 13px;
-            color: #666;
+            color: var(--text-color); /* CHANGED: theme variable */
             line-height: 1.3;
         }
 
         .contribute-link {
             display: inline-block;
-            background: #007bff;
+            background: var(--primary-color); /* CHANGED: theme variable */
             color: white;
             padding: 6px 12px;
             border-radius: 4px;
@@ -353,7 +455,7 @@
         }
 
         .contribute-link:hover {
-            background: #0056b3;
+            background: color-mix(in srgb, var(--primary-color) 80%, black); /* CHANGED: theme variable */
         }
 
         .modal-close {
@@ -384,6 +486,7 @@
             cursor: pointer;
             font-size: 12px;
             margin-bottom: 0;
+            color: var(--text-color); /* CHANGED: theme variable */
         }
 
         .terms-checkbox input[type="checkbox"] {
@@ -398,6 +501,9 @@
             line-height: 1.4;
             scrollbar-width: none; /* Firefox */
             -ms-overflow-style: none; /* IE and Edge */
+            background: var(--input-bg); /* CHANGED: theme variable */
+            color: var(--text-color); /* CHANGED: theme variable */
+            border-color: var(--input-border); /* CHANGED: theme variable */
         }
 
         .terms-textarea::-webkit-scrollbar {
@@ -405,7 +511,7 @@
         }
 
         .terms-textarea:disabled {
-            background-color: #f5f5f5;
+            background-color: var(--secondary-bg); /* CHANGED: theme variable */
             cursor: not-allowed;
             opacity: 0.7;
         }
@@ -424,9 +530,9 @@
         .preview-terms {
             margin-top: 30px;
             padding-top: 20px;
-            border-top: 1px solid #f0f0f0;
+            border-top: 1px solid var(--border-color); /* CHANGED: theme variable */
             font-size: 10px;
-            color: #666;
+            color: var(--text-color); /* CHANGED: theme variable */
             text-align: center;
             line-height: 1.4;
         }
@@ -457,14 +563,32 @@
     </style>
 </head>
 <body>
-    <!-- Header section with plugin title and info button -->
+    <!-- Updated Header section -->
     <div class="header">
         <div class="plugin-title">Invo.ce</div>
-        <button class="info-button" id="infoButton">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                <path fill="none" stroke="#9e9e9e" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 10.5h2V18m0 0H15m-2.5 0H10m1.5-11V6h1v1z"/>
+        <div class="header-actions">
+            <button class="hamburger-button" id="hamburgerButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="#666666" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Hamburger Menu Dropdown -->
+    <div class="hamburger-menu" id="hamburgerMenu">
+        <div class="menu-item" id="menuTheme">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="margin-right: 8px;">
+                <path fill="currentColor" d="M12 3a9 9 0 1 0 0 18c.83 0 1.5-.67 1.5-1.5S12.83 18 12 18a6 6 0 0 1 0-12c.83 0 1.5-.67 1.5-1.5S12.83 3 12 3z"/>
             </svg>
-        </button>
+            Theme
+        </div>
+        <div class="menu-item" id="menuInfo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="margin-right: 8px;">
+                <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            Info
+        </div>
     </div>
 
     <!-- Main form content area -->
@@ -688,7 +812,8 @@
             setupEventListeners();
             initializeCurrency();
             initializeLineItems();
-            calculateTotals(); // NEW: Initialize calculations with currency
+            calculateTotals();
+            detectAndApplyFigmaTheme(); // NEW: Add theme detection
         });
 
         // Set default dates for invoice and due date
@@ -709,7 +834,10 @@
 
         // Set up all event listeners
         function setupEventListeners() {
-            document.getElementById('infoButton').addEventListener('click', showInfoModal);
+            document.getElementById('hamburgerButton').addEventListener('click', toggleHamburgerMenu);
+            document.getElementById('menuTheme').addEventListener('click', toggleTheme); // CHANGED: menuThemes → menuTheme, showThemesModal → toggleTheme
+            document.getElementById('menuInfo').addEventListener('click', showInfoModal);
+            document.addEventListener('click', closeMenuOnClickOutside);
             document.getElementById('modalClose').addEventListener('click', hideInfoModal);
             document.getElementById('previewBtn').addEventListener('click', showPreview);
             document.getElementById('backBtn').addEventListener('click', showForm);
@@ -727,6 +855,71 @@
             document.getElementById('currencySelect').addEventListener('change', function() {
                 calculateTotals();
             });
+        }
+
+        // Toggle hamburger menu visibility
+        function toggleHamburgerMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('hamburgerMenu');
+            menu.classList.toggle('show');
+        }
+
+        // Close menu when clicking outside
+        function closeMenuOnClickOutside(event) {
+            const menu = document.getElementById('hamburgerMenu');
+            const button = document.getElementById('hamburgerButton');
+            
+            if (!menu.contains(event.target) && !button.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        }
+
+        // Close menu when menu item is clicked
+        function closeHamburgerMenu() {
+            document.getElementById('hamburgerMenu').classList.remove('show');
+        }
+
+        // Update showInfoModal to close menu
+        function showInfoModal() {
+            closeHamburgerMenu();
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        // === THEME FUNCTIONS === //
+
+        // Theme functionality - NO PERSISTENCE
+        let currentTheme = 'light';
+
+        // Detect Figma's theme and apply matching theme
+        function detectAndApplyFigmaTheme() {
+            // For Figma plugin, we can check if dark mode is preferred
+            const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            currentTheme = isDarkMode ? 'dark' : 'light';
+            applyTheme(currentTheme);
+            updateThemeIcon();
+        }
+
+        // Toggle between light and dark themes
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(currentTheme);
+            updateThemeIcon();
+            closeHamburgerMenu();
+        }
+
+        // Apply theme to the document
+        function applyTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+        }
+
+        // Update the theme icon in the menu
+        function updateThemeIcon() {
+            const themeIcon = document.querySelector('#menuTheme svg');
+            if (currentTheme === 'dark') {
+                themeIcon.innerHTML = '<path fill="currentColor" d="M12 3a9 9 0 1 0 0 18c.83 0 1.5-.67 1.5-1.5S12.83 18 12 18a6 6 0 0 1 0-12c.83 0 1.5-.67 1.5-1.5S12.83 3 12 3z"/>'; // Moon icon
+            } else {
+                themeIcon.innerHTML = '<path fill="currentColor" d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM6.34 5.16l-1.42 1.42c-.39.39-.39 1.02 0 1.41c.39.39 1.02.39 1.41 0l1.42-1.42a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.41 0zm12.73 12.73l-1.42 1.42c-.39.39-.39 1.02 0 1.41c.39.39 1.02.39 1.41 0l1.42-1.42a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.41 0zM5.16 17.66l-1.42-1.42a.996.996 0 0 0-1.41 0c-.39.39-.39 1.02 0 1.41l1.42 1.42c.39.39 1.02.39 1.41 0c.39-.39.39-1.02 0-1.41zm12.73-12.73l-1.42-1.42a.996.996 0 0 0-1.41 0c-.39.39-.39 1.02 0 1.41l1.42 1.42c.39.39 1.02.39 1.41 0c.39-.39.39-1.02 0-1.41z"/>'; // Sun icon
+            }
         }
 
         // NEW: Currency formatting function
